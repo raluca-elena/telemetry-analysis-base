@@ -1,6 +1,6 @@
 var fs = require('fs');
 var aws = require('aws-sdk');
-aws.config.loadFromPath('/bin/mapper/config.json');
+aws.config.loadFromPath('/opt/analysis-tools/config.json');
 var s3 = new aws.S3();
 var argv = process.argv;
 argv.shift();
@@ -10,7 +10,7 @@ console.log("number of files to process is", len);
 var toDownload = argv.slice(0, 3);
 var y = argv.slice(3, argv.length);
 
-var proc = require('child_process').spawn('node', ['/bin/mapper/mapper.js']);
+var proc = require('child_process').spawn('node', ['/opt/analysis-tools/mapper.js']);
 
 //write to parent stdout proc stdout
 proc.stdout.on('data', function (data) {

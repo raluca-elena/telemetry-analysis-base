@@ -2,7 +2,7 @@ var yaml = require('js-yaml');
 var fs   = require('fs');
 var child_process = require('child_process');
 
-var doc = yaml.safeLoad(fs.readFileSync('/etc/mapper.yml', 'utf8'));
+var doc = yaml.safeLoad(fs.readFileSync('/etc/analysis-tools.yml', 'utf8'));
 var stdin = process.openStdin();
 var pr;
 
@@ -11,7 +11,7 @@ if (doc.language == 'binary') {
 } else if (doc.language == 'javascript') {
     pr = child_process.spawn('node', [doc.script]);
 } else if (doc.language == 'python') {
-    pr = child_process.spawn('/bin/mapper/helper-functions/python-helper-function.py', ['mapper']);
+    pr = child_process.spawn('/opt/analysis-tools/helper-functions/python-helper.py', ['mapper']);
 } else {
     console.log("we don't support this language yet", doc.language);
     // TODO: crash in flames!
