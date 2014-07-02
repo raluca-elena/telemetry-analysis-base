@@ -15,7 +15,7 @@ command = sys.argv[1]
 sys.path.append(os.path.abspath("/home/worker"))
 mapper = __import__(command)
 
-f = open('result.txt', 'w+')
+f = open('/home/worker/result.txt', 'w+')
 for line in sys.stdin:
     x = line;
     xz_cmd = ["xz", "-d", "--stdout", line.strip()]
