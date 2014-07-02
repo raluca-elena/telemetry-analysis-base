@@ -12,6 +12,7 @@ RUN mkdir /opt/analysis-tools
 ADD downloader.js /opt/analysis-tools/downloader.js 
 ADD mapper.js /opt/analysis-tools/mapper.js
 ADD mapper.py /opt/analysis-tools/mapper.py
+ADD mapper.py /home/worker/mapper.py
 ADD analysis-tools.yml /etc/analysis-tools.yml
 ADD config.json /opt/analysis-tools/config.json
 ADD package.json /opt/analysis-tools/package.json
