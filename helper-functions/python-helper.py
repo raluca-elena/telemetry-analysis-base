@@ -6,12 +6,13 @@ import simplejson as json
 import subprocess
 import logging
 from subprocess import Popen, PIPE
-logging.basicConfig(filename='python-helper-function.log',level=logging.DEBUG)
+logging.basicConfig(filename='/home/worker/python-helper-function.log',level=logging.DEBUG)
 import time
 
 print "args: ", sys.argv
 command = sys.argv[1]
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
+sys.path.append(os.path.abspath("/home/worker"))
 mapper = __import__(command)
 
 f = open('result.txt', 'w+')
