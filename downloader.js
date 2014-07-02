@@ -1,5 +1,7 @@
 var fs = require('fs');
 var aws = require('aws-sdk');
+var mkdirp = require('mkdirp');
+
 aws.config.loadFromPath('/opt/analysis-tools/config.json');
 var s3 = new aws.S3();
 var argv = process.argv;
@@ -28,25 +30,44 @@ proc.stderr.on('data', function(data) {
     }})();
 
 var filesRead = [];
+
 function createObj(filename) {
-    var writeStream = fs.createWriteStream('./' + filename.split('/').join('-'));
-    s3.getObject({ Bucket: 'telemetry-published-v1', Key: filename})
-        .createReadStream()
-        .on("end", function () {
-            proc.stdin.write(filename.split('/').join('-'));
-            filesRead.push(filename);
-            if (toDownload.length == 0 && y.length == 0) {
-                if (filesRead.length === len) {
-                    console.log("files downloaded succesfully", filesRead);
-                    proc.stdin.end();
-                }
-            } else if (toDownload.length == 0 && y.length > 0) {
-                var x = y.pop();
-                createObj(x);
-            } else {
-                console.log("I SHOULD NOT BE HERE :(((");
-            }
-        })
-        .on("error", function() { console.log("got this data as error", arguments); })
-        .pipe(writeStream);
-}
+
+    var pathSplit = filename.split('/');
+    var fname = pathSplit.pop();
+    var dirPath = pathSplit.join('/');
+    var dr = "s3/" + dirPath;
+
+    mkdirp(dr, function (err) {
+        if (err)
+            console.error("error from this directory", err)
+        else {
+            var newFile = dr + "/" + fname;
+            var writeStream = fs.createWriteStream(newFile);
+
+            s3.getObject({ Bucket: 'telemetry-published-v1', Key: filename})
+                .createReadStream()
+                .on("end", function () {
+
+                    proc.stdin.write(newFile);
+                    filesRead.push(filename);
+                    if (toDownload.length == 0 && y.length == 0) {
+                        if (filesRead.length === len) {
+                            console.log("files downloaded succesfully", filesRead);
+                            proc.stdin.end();
+                        }
+                    } else if (toDownload.length == 0 && y.length > 0) {
+                        var x = y.pop();
+                        createObj(x);
+                    } else {
+                        console.log("I SHOULD NOT BE HERE :(((");
+                    }
+                })
+                .on("error", function() {
+                    console.log("got this data as error", arguments,
+                        " path from s3:", filename,
+                        " fname:", fname);
+                })
+                .pipe(writeStream);
+        }
+    });}

@@ -4,7 +4,7 @@ RUN sudo apt-get update
 RUN sudo apt-get update --fix-missing
 RUN sudo apt-get install -y  wget make python-pip xz-utils python g++ gcc nodejs npm nodejs-legacy ca-certificates sudo vim 
 RUN sudo pip install  simplejson
-RUN sudo npm install aws-sdk js-yaml
+RUN sudo npm install aws-sdk js-yaml mkdirp
 RUN echo "worker ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN useradd -d /home/worker -s /bin/bash -m worker
 RUN mkdir /opt/analysis-tools
