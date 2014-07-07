@@ -1,7 +1,9 @@
+#!/usr/bin/env node
 var fs = require('fs');
 var aws = require('aws-sdk');
 var mkdirp = require('mkdirp');
 var path = require('path');
+var LineReadableStream = require('line-readable-stream');
 aws.config.loadFromPath('./config.json');
 var s3 = new aws.S3();
 
@@ -18,33 +20,32 @@ var proc = require('child_process').spawn('node', ['./mapper.js']);
 
 //write to parent stdout proc stdout
 proc.stdout.on('data', function (data) {
-console.log('mapper stdout: ' + data);
+    console.log('mapper stdout: ' + data);
+});
+
+//write to parent stderr proc stderr
+proc.stderr.on('data', function(data) {
+    process.stderr.write(data);
+});
+
+(function() {
+    while (downloadingFiles.length !== 0) {
+        createObj(downloadingFiles.pop());
+    }})();
+
+var filesRead = [];
+function makeDirectories(filename) {
+    mkdirp.sync(path.join("s3", path.dirname(filename)), function(err) {
+        if (err)
+            console.log("failed to construct this directory ", err);
+        else {
+            console.log("constructed directory with success ", path.join("s3/", path.dirname(filename)));
+            console.log("name of file ", path.basename(filename));
+        }
+        return path.basename(filename);
     });
 
-    //write to parent stderr proc stderr
-    proc.stderr.on('data', function(data) {
-        process.stderr.write(data);
-    });
-
-    (function() {
-        while (downloadingFiles.length !== 0) {
-            createObj(downloadingFiles.pop());
-        }})();
-
-    var filesRead = [];
-    function makeDirectories(filename) {
-        mkdirp.sync(path.join("s3", path.dirname(filename)), function(err) {
-            if (err)
-                console.log("failed to construct this directory ", err);
-            else {
-                console.log("constructed directory with success ", "s3/" + path.dirname(filename));
-                var nameOfFile = path.basename(filename);
-                console.log("name of file ", nameOfFile);
-            }
-            return path.basename(filename);
-        });
-
-    }
+}
 
 function createObj(filename) {
     var fileName = makeDirectories(filename)
@@ -54,6 +55,8 @@ function createObj(filename) {
     s3.getObject({ Bucket: 'telemetry-published-v1', Key: filename})
         .createReadStream()
         .on("end", function () {
+
+
             proc.stdin.write(newFile);
             filesRead.push(filename);
             if (downloadingFiles.length == 0 && toBeDownloadedNext.length == 0) {
