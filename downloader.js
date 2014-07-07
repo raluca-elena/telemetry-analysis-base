@@ -1,18 +1,21 @@
 var fs = require('fs');
 var aws = require('aws-sdk');
 var mkdirp = require('mkdirp');
+var path = require('path');
 
-aws.config.loadFromPath('/opt/analysis-tools/config.json');
+aws.config.loadFromPath('./config.json');
 var s3 = new aws.S3();
+//
 var argv = process.argv;
 argv.shift();
 argv.shift();
 len = argv.length;
 console.log("number of files to process is", len);
-var toDownload = argv.slice(0, 3);
-var y = argv.slice(3, argv.length);
+//poate facut mai bine cu commander.js ?
+var downloadingFiles = argv.slice(0, 3);
+var toBeDownloadedNext = argv.slice(3, argv.length);
 
-var proc = require('child_process').spawn('node', ['/opt/analysis-tools/mapper.js']);
+var proc = require('child_process').spawn('node', ['./mapper.js']);
 
 //write to parent stdout proc stdout
 proc.stdout.on('data', function (data) {
@@ -25,14 +28,20 @@ proc.stderr.on('data', function(data) {
 });
 
 (function() {
-    while (toDownload.length !== 0) {
-        createObj(toDownload.pop());
+    while (downloadingFiles.length !== 0) {
+        createObj(downloadingFiles.pop());
     }})();
 
 var filesRead = [];
+function makeDirectories(filename) {
+    console.log("from this file name to " + filename + " path--------------- " + path.dirname(filename));
+    mkdirp.sync("s3/" + path.dirname(filename));
+
+}
 
 function createObj(filename) {
 
+    console.log("from this file name to " + filename + " path--------------- " + path.dirname(filename));
     var pathSplit = filename.split('/');
     var fname = pathSplit.pop();
     var dirPath = pathSplit.join('/');
@@ -51,13 +60,13 @@ function createObj(filename) {
 
                     proc.stdin.write(newFile);
                     filesRead.push(filename);
-                    if (toDownload.length == 0 && y.length == 0) {
+                    if (downloadingFiles.length == 0 && toBeDownloadedNext.length == 0) {
                         if (filesRead.length === len) {
                             console.log("files downloaded succesfully", filesRead);
                             proc.stdin.end();
                         }
-                    } else if (toDownload.length == 0 && y.length > 0) {
-                        var x = y.pop();
+                    } else if (downloadingFiles.length == 0 && toBeDownloadedNext.length > 0) {
+                        var x = toBeDownloadedNext.pop();
                         createObj(x);
                     } else {
                         console.log("I SHOULD NOT BE HERE :(((");
