@@ -3,6 +3,7 @@ var fs = require('fs');
 var aws = require('aws-sdk');
 var mkdirp = require('mkdirp');
 var path = require('path');
+var mapper = require('./mapper.js');
 var LineReadableStream = require('line-readable-stream');
 aws.config.loadFromPath('./config.json');
 var s3 = new aws.S3();
@@ -13,69 +14,53 @@ argv.shift();
 len = argv.length;
 console.log("number of files to process is", len);
 
-//poate facut mai bine cu commander.js ?
+// commander.js ?
 var downloadingFiles = argv.slice(0, 3);
 var toBeDownloadedNext = argv.slice(3, argv.length);
-var proc = require('child_process').spawn('node', ['./mapper.js']);
 
-//write to parent stdout proc stdout
-proc.stdout.on('data', function (data) {
-    console.log('mapper stdout: ' + data);
-});
-
-//write to parent stderr proc stderr
-proc.stderr.on('data', function(data) {
-    process.stderr.write(data);
-});
-
+var proc = mapper.mapper();
 (function() {
     while (downloadingFiles.length !== 0) {
-        createObj(downloadingFiles.pop());
+        downloadFile(downloadingFiles.pop());
     }})();
 
-var filesRead = [];
-function makeDirectories(filename) {
-    mkdirp.sync(path.join("s3", path.dirname(filename)), function(err) {
-        if (err)
-            console.log("failed to construct this directory ", err);
-        else {
-            console.log("constructed directory with success ", path.join("s3/", path.dirname(filename)));
-            console.log("name of file ", path.basename(filename));
-        }
-        return path.basename(filename);
-    });
+var filesDownloaded = [];
+var filesNotDownloaded = [];
 
-}
-
-function createObj(filename) {
-    var fileName = makeDirectories(filename)
-    var newFile = path.join("s3/", filename);
+function downloadFile(pathInS3) {
+    mkdirp.sync(path.join("s3", path.dirname(pathInS3)));
+    var newFile = path.join("s3/", pathInS3);
     var writeStream = fs.createWriteStream(newFile);
 
-    s3.getObject({ Bucket: 'telemetry-published-v1', Key: filename})
+    s3.getObject({ Bucket: 'telemetry-published-v1', Key: pathInS3})
         .createReadStream()
         .on("end", function () {
-
-
-            proc.stdin.write(newFile);
-            filesRead.push(filename);
+            proc.stdin.write(newFile + '\n');
+            filesDownloaded.push(pathInS3);
             if (downloadingFiles.length == 0 && toBeDownloadedNext.length == 0) {
-                if (filesRead.length === len) {
-                    console.log("files downloaded successfully", filesRead);
+                if (filesDownloaded.length  + filesNotDownloaded.length === len) {
+                    console.log("files downloaded successfully\n", filesDownloaded);
+                    console.log("files that could not be downloaded\n", filesNotDownloaded);
                     proc.stdin.end();
                 }
             } else if (downloadingFiles.length == 0 && toBeDownloadedNext.length > 0) {
                 var fileToDownload = toBeDownloadedNext.pop();
-                createObj(fileToDownload);
+                downloadFile(fileToDownload);
             } else {
                 console.log("I SHOULD NOT BE HERE :(((");
             }
         })
         .on("error", function() {
-            console.log("got this data as error", arguments,
-                " path from s3:", filename,
-                " fname:", fileName);
+            console.error("could not download this specific file from s3\n", pathInS3);
+            if (downloadingFiles.length == 0 && toBeDownloadedNext.length == 0) {
+                console.log("files downloaded successfully\n", filesDownloaded);
+                console.log("files that could not be downloaded\n", filesNotDownloaded);
+                proc.stdin.end();
+                process.exit();
+            } else {
+                filesNotDownloaded.push(pathInS3);
+                return;
+            }
         })
         .pipe(writeStream);
-
 }
