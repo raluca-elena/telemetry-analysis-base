@@ -1,30 +1,29 @@
-var yaml = require('js-yaml');
-var LineReadableStream = require('line-readable-stream');
-var fs   = require('fs');
-var child_process = require('child_process');
+exports.mapper = function() {
+    var yaml = require('js-yaml');
+    var fs = require('fs');
+    var child_process = require('child_process');
+    var doc = yaml.safeLoad(fs.readFileSync('analysis-tools.yml', 'utf8'));
+    var proc;
 
-var doc = yaml.safeLoad(fs.readFileSync('analysis-tools.yml', 'utf8'));
-var stdin = process.openStdin();
-var pr;
+    //read configuration and spawn accordingly
+    if (doc.language == 'binary') {
+        proc = child_process.spawn(doc.script, doc.arguments);
+    } else if (doc.language == 'javascript') {
+        proc = child_process.spawn('node', [doc.script]);
+    } else if (doc.language == 'python') {
+        proc = child_process.spawn('./helper-functions/python-helper.py', ['mapper'], { stdio: ['pipe', process.stdout, process.stderr]});
+    } else {
+        console.log("language not supported", doc.language);
+        process.exit();
+    }
+    //return mapper exit code
+    proc.on('exit', function (code) {
+        console.log("MAPPER exit code ", code);
+    });
+    //if mapper returned an error print it to console
+    proc.on('error', function(err) {
+        console.error("mapper experienced this error ", err);
+    });
 
-if (doc.language == 'binary') {
-    pr = child_process.spawn(doc.script, doc.arguments);
-} else if (doc.language == 'javascript') {
-    pr = child_process.spawn('node', [doc.script]);
-} else if (doc.language == 'python') {
-    pr = child_process.spawn('./helper-functions/python-helper.py', ['mapper']);
-} else {
-    console.log("we don't support this language yet", doc.language);
-    // TODO: crash in flames!
+    return proc;
 }
-
-pr.on('exit', function(code){
-    console.log("MAPPER exit code", code);
-})
-
-stdin.on('data', function (data) {
-
-    console.log("file sent to mapper", data.toString());
-    pr.stdin.write(data + "\n");
-});
-stdin.on("end", function() { pr.stdin.end(); })
