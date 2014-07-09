@@ -10,8 +10,8 @@ logging.basicConfig(filename='python-helper-function.log',level=logging.DEBUG)
 
 print "args: ", sys.argv
 command = sys.argv[1]
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
-#sys.path.append(os.path.abspath("/home/worker"))
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
+sys.path.append(os.path.abspath("/home/worker"))
 mapper = __import__(command)
 
 filesDecompressed = []
