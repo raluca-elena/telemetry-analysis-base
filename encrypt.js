@@ -20,6 +20,7 @@ var fixture = {
 var privKey = ursa.createPrivateKey(fixture.PRIVATE_KEY);
 var CryptoJS = node_cryptojs.CryptoJS;
 var JsonFormatter = node_cryptojs.JsonFormatter;
+
 exports.encryptData = function encryptData(data){
     var symmetricKey = crypto.randomBytes(128);
     var symmetricKeyB64 = symmetricKey.toString("base64");
