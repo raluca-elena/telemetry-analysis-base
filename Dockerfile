@@ -4,20 +4,24 @@ RUN sudo apt-get update
 RUN sudo apt-get update --fix-missing
 RUN sudo apt-get install -y  wget make python-pip xz-utils python g++ gcc nodejs npm nodejs-legacy ca-certificates sudo vim 
 RUN sudo pip install  simplejson
-RUN sudo npm install aws-sdk js-yaml mkdirp
 RUN echo "worker ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN useradd -d /home/worker -s /bin/bash -m worker
 RUN mkdir /opt/analysis-tools
 
-ADD downloader.js /opt/analysis-tools/downloader.js 
+ADD downloader.js /opt/analysis-tools/downloader.js
+ADD reducer.js /opt/analysis-tools/reducer.js
+ADD key.pem /opt/analysis-tools/key.pem
+ADD encrypt.js /opt/analysis-tools/encrypt.js
+ADD fabricateS3Credentials.js /opt/analysis-tools/fabricateS3Credentials.js
 ADD mapper.js /opt/analysis-tools/mapper.js
 ADD mapper.py /opt/analysis-tools/mapper.py
 ADD mapper.py /home/worker/mapper.py
 ADD analysis-tools.yml /etc/analysis-tools.yml
-ADD config.json /opt/analysis-tools/config.json
 ADD package.json /opt/analysis-tools/package.json
 
-RUN mkdir /opt/analysis-tools/helper-functions 
+RUN cd /opt/analysis-tools; npm install
+
+RUN mkdir /opt/analysis-tools/helper-functions
 ADD ./helper-functions  /opt/analysis-tools/helper-functions 
 RUN sudo chmod -R 777 /opt/analysis-tools
 # Set variable normally configured at login, by the shells parent process, these
