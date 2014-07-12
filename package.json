@@ -6,7 +6,13 @@
                 "mkdirp":               "0.5.0",
                "js-yaml":               "3.1.0",
   "line-readable-stream":               "1.0.4",
-               "aws-sdk":               "2.0.4"
+               "aws-sdk":               "2.0.4",
+     "node-cryptojs-aes":               "0.4.0",
+                  "ursa":               "0.8.0",
+                "crypto":               "0.0.3",
+                "assert":               "1.1.1",
+                "mkdirp":               "0.5.0",
+                  "path":               "0.4.9"
   },
   "engines": {
     "node":                             "0.10.x"
