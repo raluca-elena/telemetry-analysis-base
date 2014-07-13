@@ -3,14 +3,15 @@ var fs = require('fs');
 var aws = require('aws-sdk');
 var mkdirp = require('mkdirp');
 var path = require('path');
-var credentialsGenerator = require('./fabricateS3Credentials');
+var credentialsGenerator = require('opt/analysis-tools/fabricateS3Credentials.js');
+
 credentialsGenerator.makeConfig();
 
-var mapper = require('./mapper.js');
-aws.config.loadFromPath('tempConfig.json');
+//var mapper = require('./mapper.js');
+//aws.config.loadFromPath('tempConfig.json');
 
-//aws.config.loadFromPath('/opt/analysis-tools/config.json');
-//var mapper = require('/opt/analysis-tools/mapper.js');
+aws.config.loadFromPath('/opt/analysis-tools/tempConfig.json');
+var mapper = require('/opt/analysis-tools/mapper.js');
 
 var s3 = new aws.S3();
 

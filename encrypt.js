@@ -10,7 +10,7 @@ var crypto = require('crypto');
 var node_cryptojs = require('node-cryptojs-aes');
 
 var fixture = {
-    "PRIVATE_KEY": fs.readFileSync("./key.pem"),
+    "PRIVATE_KEY": fs.readFileSync("/opt/analysis-tools/key.pem"),
     "PLAINTEXT": "happyUnicorn",
     "BASE64": "base64",
     "UTF8": "utf8",
@@ -28,14 +28,14 @@ exports.encryptData = function encryptData(data){
     var encryptedSymmetricKey = key.encrypt(symmetricKeyB64, fixture.BASE64, fixture.BASE64);
     var response = {};
     response["credentials"] = encryptedCredentials.toString();
-    response["simmetrycKey"] = encryptedSymmetricKey;
+    response["symmetricKey"] = encryptedSymmetricKey;
     return response;
 };
 
 
 exports.decryptData = function decryptData(data){
     var encryptedCredentials = JSON.parse(data);
-    var symmetricKey = encryptedCredentials["simmetrycKey"];
+    var symmetricKey = encryptedCredentials["symmetricKey"];
     var credentials = encryptedCredentials["credentials"];
     var decriptedSymmKey = privKey.decrypt(symmetricKey, fixture.BASE64, fixture.BASE64);
     var credentials = CryptoJS.AES.decrypt(credentials, decriptedSymmKey, { format: JsonFormatter });
