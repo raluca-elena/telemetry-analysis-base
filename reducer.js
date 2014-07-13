@@ -2,63 +2,110 @@
  * Created by rpodiuc on 7/12/14.
  */
 var request = require('superagent');
-var spawn = require('child_process').spawn;
 var mkdirp = require('mkdirp');
 var path = require('path');
-var exec = require('child_process').exec;
+var fs = require('fs');
+//var reducerDriver = require('./reducerDriver.js');
+var reducerDriver = require('/opt/analysis-tools/reducerDriver.js');
+var proc = reducerDriver.reduce();
 
-//take task ids from env var
-var taskIds = process.env.INPUT_TASK_IDS;
-console.log("this is my ENV ", taskIds);
-taskIds = taskIds.split(" ");
-var queue = [];
-var MAX = 20;  // only allow 20 simultaneous exec calls
-var count = 0;  // holds how many execs are running
-var taskUrls = [];
-
-function constructUrlForTaskId(taskId) {
-    var taskUrl = "http://tasks.taskcluster.net/" + taskId + "/runs/1/result.json";
-    taskUrls.push(taskUrl);
+var taskIds = 0;
+function getDependents() {
+    taskIds = process.env.INPUT_TASK_IDS;
+    if (taskIds === undefined){
+        console.log("got no dependent tasks");
+        process.exit();
+    }
+    taskIds = taskIds.split(" ");
+    console.log("mappers ids ", taskIds);
 }
 
-taskIds.forEach(function(taskId){
-    constructUrlForTaskId(taskId);
+getDependents();
+
+var taskUrls =taskIds.map(function(taskId) {
+    return  "http://tasks.taskcluster.net/" + taskId + "/runs/1/result.json";
 });
 
-//console.log("task urls are ", taskUrls);
+var queue = [];
+var MAX = 20;  // only allow 20 simultaneous mapper result calls
+var count = 0;  // how many downloads are running
 
-function getTasksResponse(tasksUrls){
-    tasksUrls.forEach(function(url){
-        console.log("url is ", url);
+mkdirp.sync("./mapperOutput");
+
+var parsedResponses = 0;
+var filesDownloadedSuccesfully = [];
+var filesNotAbleToDownload = [];
+
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
+
+function parseArtifactOfMapper(res) {
+    parsedResponses++;
+    var artifacts = res.body['artifacts'];
+    if (isEmpty(artifacts))
+        console.log("no artifacts found for this task");
+    if (artifacts['result'] !== undefined) {
+        console.log(" result link : ", artifacts['result']);
+        if (count < MAX) {  // go get the file!
+            count += 1;
+            getResultOfMapper(artifacts['result'], startAnotherDownload);
+        } else {  // queue it up..
+            queue.push(artifacts['result']);
+        }
+    }
+}
+
+function getResultOfMapper(url, cb){
+    console.log("result is at url ", url);
+    request
+        .get(url)
+        .buffer(true)
+        .end(function(res){
+            var taskId = url.split("/")[3];
+            if (res.ok) {
+                var newFile = path.join("./mapperOutput", taskId);
+                fs.writeFileSync(newFile, res.text);
+                proc.stdin.write(newFile + '\n');
+                filesDownloadedSuccesfully.push(taskId);
+                if (filesDownloadedSuccesfully.length + filesNotAbleToDownload.length === parsedResponses) {
+                    proc.stdin.end();
+                    process.exit();
+                }
+                cb();
+            } else {
+                console.log("invalid response for get request ", url);
+                filesNotAbleToDownload.push(taskId);
+            }
+        });
+}
+
+function startAnotherDownload() {
+    count -= 1;
+    if (queue.length > 0 && count < MAX) {  // get next item in the queue!
+        count += 1;
+        var url = queue.shift();
+        getResultOfMapper(url, startAnotherDownload);
+    }
+}
+
+function getAllMappersArtifacts(mappersUrls){
+    mappersUrls.forEach(function(url){
         request
             .get(url)
             .end(function (res) {
-                var artifacts = res.body['artifacts'];
-                var uri = [];
-                for (var j  in artifacts) {
-                    uri.push(artifacts[j]);
+                if (res.ok) {
+                    parseArtifactOfMapper(res);
+                } else {
+                    console.log("could't get response artifacts for ", url);
                 }
-                uri.forEach( function(url) {
-                    if (count < MAX) {  // go get the file!
-                        count += 1;
-                        exec('wget '+url, wget_callback);
-                    } else {  // queue it up..
-                        queue.push(url);
-                    }
-                });
 
             });
     });
 }
 
-getTasksResponse(taskUrls);
-
-//download in parallel all the results
-function wget_callback(err, stdout, stderr) {
-    count -= 1;
-    if (queue.length > 0 && count < MAX) {  // get next item in the queue!
-        count += 1;
-        var url = queue.shift();
-        exec('wget '+url, wget_callback);
-    }
-}
+getAllMappersArtifacts(taskUrls);
