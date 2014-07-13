@@ -1,12 +1,12 @@
 /**
  * Created by rpodiuc on 7/13/14.
  */
-exports.reducer = function() {
+exports.reduce = function() {
     var yaml = require('js-yaml');
     var fs = require('fs');
     var child_process = require('child_process');
-    var doc = yaml.safeLoad(fs.readFileSync('analysis-tools.yml', 'utf8'));
-    //var doc = yaml.safeLoad(fs.readFileSync('/etc/analysis-tools.yml', 'utf8'));
+    //var doc = yaml.safeLoad(fs.readFileSync('analysis-tools.yml', 'utf8'));
+    var doc = yaml.safeLoad(fs.readFileSync('/etc/analysis-tools.yml', 'utf8'));
     var proc;
 
     //read configuration and spawn accordingly
@@ -15,8 +15,8 @@ exports.reducer = function() {
     } else if (doc.language == 'javascript') {
         proc = child_process.spawn('node', [doc.script]);
     } else if (doc.language == 'python') {
-        proc = child_process.spawn('./python-helper-reducer.py', ['reducer'], { stdio: ['pipe', process.stdout, process.stderr]});
-        //proc = child_process.spawn('/opt/analysis-tools/helper-functions/python-helper-reducer.py', ['reducer'], { stdio: ['pipe', process.stdout, process.stderr]});
+        //proc = child_process.spawn('./python-helper-reducer.py', ['reducer'], { stdio: ['pipe', process.stdout, process.stderr]});
+        proc = child_process.spawn('/opt/analysis-tools/helper-functions/python-helper-reducer.py', ['reducer'], { stdio: ['pipe', process.stdout, process.stderr]});
 
     } else {
         console.log("language not supported", doc.language);
