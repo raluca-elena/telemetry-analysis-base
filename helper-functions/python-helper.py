@@ -10,8 +10,8 @@ logging.basicConfig(filename='python-helper-function.log',level=logging.DEBUG)
 
 print "args: ", sys.argv
 command = sys.argv[1]
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
-#sys.path.append(os.path.abspath("/home/worker"))
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
+sys.path.append(os.path.abspath("/home/worker"))
 mapper = __import__(command)
 
 filesDecompressed = []
@@ -22,6 +22,7 @@ f = open('result.txt', 'w+')
 
 for line in sys.stdin:
     file = line.strip();
+    print "file sent to mapper ", file
     xz_cmd = ["xz", "-d", "--stdout", line.strip()]
     xz = Popen(xz_cmd, stdout=PIPE, stderr=PIPE)
     count = 0
@@ -35,9 +36,9 @@ for line in sys.stdin:
             jsonLine = json.loads(jsonString)
         except ValueError, e:
             invalidLines.append(lineDecompressed)
-            print "in file ", line, " line", count, " failed"
+            print "in file ", file, " line", count, " failed"
         else:
-            f.write(mapper.mapper(uuid, jsonLine) + "\n")
+            f.write(mapper.mapper(uuid, file, jsonLine) + "\n")
         count+=1
     if len(invalidLines) != 0:
         print invalidLines
