@@ -10,12 +10,20 @@ RUN mkdir /opt/analysis-tools
 
 ADD downloader.js /opt/analysis-tools/downloader.js
 ADD reducer.js /opt/analysis-tools/reducer.js
+
 ADD key.pem /opt/analysis-tools/key.pem
 ADD encrypt.js /opt/analysis-tools/encrypt.js
 ADD fabricateS3Credentials.js /opt/analysis-tools/fabricateS3Credentials.js
+
 ADD mapper.js /opt/analysis-tools/mapper.js
+ADD reducerDriver.js /opt/analysis-tools/reducerDriver.js
+
 ADD mapper.py /opt/analysis-tools/mapper.py
+ADD reducer.py /opt/analysis-tools/reducer.py
+
 ADD mapper.py /home/worker/mapper.py
+ADD reducer.py /home/worker/reducer.py
+
 ADD analysis-tools.yml /etc/analysis-tools.yml
 ADD package.json /opt/analysis-tools/package.json
 
