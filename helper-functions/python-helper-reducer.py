@@ -7,19 +7,20 @@ logging.basicConfig(filename='python-helper-reducer.log',level=logging.DEBUG)
 
 print "args: ", sys.argv
 command = sys.argv[1]
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
-#sys.path.append(os.path.abspath("/home/worker"))
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
+sys.path.append(os.path.abspath("/home/worker"))
 reducer = __import__(command)
 
 result = open('reducerResult.txt', 'w+')
 lines = []
 for line in sys.stdin:
-    file = line.strip()
-    f = open(file, 'r')
-    lines1 = [line for line in f if line.strip()]
-    f.close()
-    lines.extend(lines1)
-    print "file sent to reducer ", file
+    file_name = line.strip()
+    current_file = open(file_name, 'r')
+    #if any empty lines remove them
+    current_lines = [line for line in current_file if line.strip()]
+    current_file.close()
+    lines.extend(current_lines)
+    print "file sent to reducer ", file_name
 
 dict = {}
 for l in lines:
@@ -29,7 +30,7 @@ for l in lines:
         dict[key].append(val)
     else:
         dict[key]=[val]
-    print dict
+    #print dict
 
 for k, v in dict.iteritems():
     result.write(reducer.reduce(k, v) + "\n")
