@@ -32,7 +32,6 @@ exports.encryptData = function encryptData(data){
     return response;
 };
 
-
 exports.decryptData = function decryptData(data){
     var encryptedCredentials = JSON.parse(data);
     var symmetricKey = encryptedCredentials["symmetricKey"];

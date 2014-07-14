@@ -2,7 +2,8 @@
 FROM ubuntu:14.04
 RUN sudo apt-get update
 RUN sudo apt-get update --fix-missing
-RUN sudo apt-get install -y  wget make python-pip xz-utils python g++ gcc nodejs npm nodejs-legacy ca-certificates sudo vim 
+RUN sudo apt-get install -y  wget make python-pip xz-utils python g++ gcc nodejs npm nodejs-legacy ca-certificates sudo vim
+RUN sudo apt-get install -y sendmail
 RUN sudo pip install  simplejson
 RUN echo "worker ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN useradd -d /home/worker -s /bin/bash -m worker
@@ -26,6 +27,7 @@ ADD reducer.py /home/worker/reducer.py
 
 ADD analysis-tools.yml /etc/analysis-tools.yml
 ADD package.json /opt/analysis-tools/package.json
+ADD email.js /opt/analysis-tools/email.js
 
 RUN cd /opt/analysis-tools; npm install
 

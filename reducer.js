@@ -5,6 +5,7 @@ var request = require('superagent');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var fs = require('fs');
+var email=require('/opt/analysis-tools/email.js');
 //var reducerDriver = require('./reducerDriver.js');
 var reducerDriver = require('/opt/analysis-tools/reducerDriver.js');
 var proc = reducerDriver.reduce();
@@ -73,6 +74,7 @@ function getResultOfMapper(url, cb){
                 proc.stdin.write(newFile + '\n');
                 filesDownloadedSuccesfully.push(taskId);
                 if (filesDownloadedSuccesfully.length + filesNotAbleToDownload.length === parsedResponses) {
+                    console.log("I CLOSE STDIN");
                     proc.stdin.end();
                 }
                 cb();

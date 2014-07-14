@@ -1,6 +1,7 @@
 /**
  * Created by rpodiuc on 7/13/14.
  */
+var email=require('/opt/analysis-tools/email.js');
 exports.reduce = function() {
     var yaml = require('js-yaml');
     var fs = require('fs');
@@ -25,6 +26,8 @@ exports.reduce = function() {
     //return reducer exit code
     proc.on('exit', function (code) {
         console.log("REDUCER exit code ", code);
+        email.sendMail();
+
     });
     //if reducer returned an error print it to console
     proc.on('error', function(err) {

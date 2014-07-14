@@ -4,7 +4,7 @@ var aws = require('aws-sdk');
 var mkdirp = require('mkdirp');
 var path = require('path');
 
-var credentialsGenerator = require('opt/analysis-tools/fabricateS3Credentials.js');
+var credentialsGenerator = require('/opt/analysis-tools/fabricateS3Credentials.js');
 credentialsGenerator.makeConfig();
 
 //var mapper = require('./mapperDriver.js');
