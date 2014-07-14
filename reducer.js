@@ -74,7 +74,6 @@ function getResultOfMapper(url, cb){
                 filesDownloadedSuccesfully.push(taskId);
                 if (filesDownloadedSuccesfully.length + filesNotAbleToDownload.length === parsedResponses) {
                     proc.stdin.end();
-                    process.exit();
                 }
                 cb();
             } else {
