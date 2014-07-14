@@ -8,14 +8,14 @@ RUN echo "worker ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN useradd -d /home/worker -s /bin/bash -m worker
 RUN mkdir /opt/analysis-tools
 
-ADD downloader.js /opt/analysis-tools/downloader.js
+ADD mapper.js /opt/analysis-tools/mapper.js
 ADD reducer.js /opt/analysis-tools/reducer.js
 
 ADD key.pem /opt/analysis-tools/key.pem
 ADD encrypt.js /opt/analysis-tools/encrypt.js
 ADD fabricateS3Credentials.js /opt/analysis-tools/fabricateS3Credentials.js
 
-ADD mapper.js /opt/analysis-tools/mapper.js
+ADD mapperDriver.js /opt/analysis-tools/mapperDriver.js
 ADD reducerDriver.js /opt/analysis-tools/reducerDriver.js
 
 ADD mapper.py /opt/analysis-tools/mapper.py

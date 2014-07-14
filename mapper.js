@@ -1,32 +1,72 @@
-exports.mapper = function() {
-    var yaml = require('js-yaml');
-    var fs = require('fs');
-    var child_process = require('child_process');
-    //var doc = yaml.safeLoad(fs.readFileSync('analysis-tools.yml', 'utf8'));
-    var doc = yaml.safeLoad(fs.readFileSync('/etc/analysis-tools.yml', 'utf8'));
-    var proc;
+#!/usr/bin/env node
+var fs = require('fs');
+var aws = require('aws-sdk');
+var mkdirp = require('mkdirp');
+var path = require('path');
 
-    //read configuration and spawn accordingly
-    if (doc.language == 'binary') {
-        proc = child_process.spawn(doc.script, doc.arguments);
-    } else if (doc.language == 'javascript') {
-        proc = child_process.spawn('node', [doc.script]);
-    } else if (doc.language == 'python') {
-        //proc = child_process.spawn('./helper-functions/python-helper.py', ['mapper'], { stdio: ['pipe', process.stdout, process.stderr]});
-        proc = child_process.spawn('/opt/analysis-tools/helper-functions/python-helper.py', ['mapper'], { stdio: ['pipe', process.stdout, process.stderr]});
+var credentialsGenerator = require('opt/analysis-tools/fabricateS3Credentials.js');
+credentialsGenerator.makeConfig();
 
-    } else {
-        console.log("language not supported", doc.language);
-        process.exit();
-    }
-    //return mapper exit code
-    proc.on('exit', function (code) {
-        console.log("MAPPER exit code ", code);
-    });
-    //if mapper returned an error print it to console
-    proc.on('error', function(err) {
-        console.error("mapper experienced this error ", err);
-    });
+//var mapper = require('./mapperDriver.js');
+//aws.config.loadFromPath('tempConfig.json');
 
-    return proc;
+aws.config.loadFromPath('/opt/analysis-tools/tempConfig.json');
+var mapper = require('/opt/analysis-tools/mapperDriver.js');
+
+var s3 = new aws.S3();
+
+var argv = process.argv;
+argv.shift();
+argv.shift();
+len = argv.length;
+console.log("number of files to process is", len);
+
+var downloadingFiles = argv.slice(0, 3);
+var toBeDownloadedNext = argv.slice(3, argv.length);
+
+var proc = mapper.mapper();
+(function() {
+    while (downloadingFiles.length !== 0) {
+        downloadFile(downloadingFiles.pop());
+    }})();
+
+var filesDownloaded = [];
+var filesNotDownloaded = [];
+
+function downloadFile(pathInS3) {
+    mkdirp.sync(path.join("s3", path.dirname(pathInS3)));
+    var newFile = path.join("s3/", pathInS3);
+    var writeStream = fs.createWriteStream(newFile);
+
+    s3.getObject({ Bucket: 'telemetry-published-v1', Key: pathInS3})
+        .createReadStream()
+        .on("end", function () {
+            proc.stdin.write(newFile + '\n');
+            filesDownloaded.push(pathInS3);
+            if (downloadingFiles.length == 0 && toBeDownloadedNext.length == 0) {
+                if (filesDownloaded.length  + filesNotDownloaded.length === len) {
+                    console.log("files downloaded successfully\n", filesDownloaded);
+                    console.log("files that could not be downloaded\n", filesNotDownloaded);
+                    proc.stdin.end();
+                }
+            } else if (downloadingFiles.length == 0 && toBeDownloadedNext.length > 0) {
+                var fileToDownload = toBeDownloadedNext.pop();
+                downloadFile(fileToDownload);
+            } else {
+                console.log("I SHOULD NOT BE HERE :(((");
+            }
+        })
+        .on("error", function() {
+            console.error("could not download this specific file from s3\n", pathInS3);
+            if (downloadingFiles.length == 0 && toBeDownloadedNext.length == 0) {
+                console.log("files downloaded successfully\n", filesDownloaded);
+                console.log("files that could not be downloaded\n", filesNotDownloaded);
+                proc.stdin.end();
+                process.exit();
+            } else {
+                filesNotDownloaded.push(pathInS3);
+                return;
+            }
+        })
+        .pipe(writeStream);
 }

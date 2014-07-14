@@ -38,7 +38,7 @@ for line in sys.stdin:
             invalidLines.append(lineDecompressed)
             print "in file ", file, " line", count, " failed"
         else:
-            f.write(mapper.mapper(uuid, file, jsonLine) + "\n")
+            f.write(mapper.mapper(uuid, file, jsonLine))
         count+=1
     if len(invalidLines) != 0:
         print invalidLines
