@@ -1,8 +1,19 @@
-/**
- * Created by rpodiuc on 7/12/14.
- */
 //#!/usr/bin/env node
 "use strict";
+
+/**
+ * encrypt.js functionality:
+ * because the credentials can be quite large we use not only RSA but we do the following
+ * -------------------------------------------------encryption----------------------------------------------------------
+ * step1: generate symmetric key
+ * step2: encrypt credentials with symmetric key
+ * step3: encrypt symmetric key with public key
+ * step4: send both encrypted symmetric key and encrypted credentials
+ * -------------------------------------------------decryption-----------------------------------------------------------
+ * step1: decrypt symmetric key with private key
+ * step2: decrypt credentials with symmetric key
+ * step3: send decrypted credentials
+ */
 var assert = require("assert");
 var ursa = require("ursa");
 var fs = require("fs");
