@@ -11,7 +11,7 @@ command = sys.argv[1]
 sys.path.append(os.path.abspath("/home/worker"))
 reducer = __import__(command)
 
-result = open('reducerResult.txt', 'w+')
+result = open('result.txt', 'w+')
 lines = []
 for line in sys.stdin:
     file_name = line.strip()
@@ -22,18 +22,21 @@ for line in sys.stdin:
     lines.extend(current_lines)
     print "file sent to reducer ", file_name
 
-dict = {}
-for l in lines:
-    key = l.split(" ")[0]
-    val = l.split(" ")[1]
-    if key in dict:
-        dict[key].append(val)
-    else:
-        dict[key]=[val]
-    #print dict
+def groupByKey(lines):
+    d={}
+    for l in lines:
+        key = l.split(" ")[0]
+        val = l.split(" ")[1]
+        if key in d:
+            print 'key is', key
+            d[key].append(val)
+        else:
+            d[key]=[val]
+    return d 
+d = groupByKey(lines)
+for k, v in d.iteritems():
+     result.write(reducer.reduce(k, v) + "\n")
 
-for k, v in dict.iteritems():
-    result.write(reducer.reduce(k, v) + "\n")
 result.close()
 
 
