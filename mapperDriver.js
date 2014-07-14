@@ -14,7 +14,6 @@ exports.mapper = function() {
     } else if (doc.language == 'python') {
         //proc = child_process.spawn('./helper-functions/python-helper-mapper.py', ['mapper'], { stdio: ['pipe', process.stdout, process.stderr]});
         proc = child_process.spawn('/opt/analysis-tools/helper-functions/python-helper-mapper.py', ['mapper'], { stdio: ['pipe', process.stdout, process.stderr]});
-
     } else {
         console.log("language not supported", doc.language);
         process.exit();

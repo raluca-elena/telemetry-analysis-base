@@ -29,7 +29,7 @@ exports.reduce = function() {
         email.sendMail();
 
     });
-    
+
     //if reducer returned an error print it to console
     proc.on('error', function(err) {
         console.error("reducer experienced this error ", err);
