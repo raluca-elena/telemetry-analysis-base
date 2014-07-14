@@ -1,7 +1,17 @@
 /**
- * Created by rpodiuc on 7/13/14.
+ * reducerDriver functionality:
+ * step1: load analysis-tools.yml
+ * step2: read configuration in analysis-tools.yml
+ * step3: spawn reducer
+ * step4: send mail when reducer finished (you might not receive this email depending on network conf/ISP :()
+ * NOTE: the paths commented are the ones on the local machine/repo and the ones uncommented are the ones in docker
+ *       image
  */
+//load email module
+//var email=require('./email.js');
 var email=require('/opt/analysis-tools/email.js');
+
+//parse analysis-tools.yml and spawn reducer
 exports.reduce = function() {
     var yaml = require('js-yaml');
     var fs = require('fs');
@@ -26,8 +36,9 @@ exports.reduce = function() {
     //return reducer exit code
     proc.on('exit', function (code) {
         console.log("REDUCER exit code ", code);
-        email.sendMail();
 
+        //send email on exit
+        email.sendMail();
     });
 
     //if reducer returned an error print it to console
