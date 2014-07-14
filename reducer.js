@@ -1,5 +1,6 @@
 /**
  * reducer.js functionality:
+ *
  * step1: check env var INPUT_TASK_IDS and parse it for taskIds of dependent tasks
  * step2: construct urls for downloading results[get artifacts from result.json than results]
  * step3: make directory /mapperOutput
