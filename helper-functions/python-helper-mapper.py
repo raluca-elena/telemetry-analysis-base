@@ -1,4 +1,15 @@
 #!/usr/bin/python
+'''
+python-helper-mapper.py functionality:
+step1: takes mapper module as argv[1] and file names at stdin
+step2: decompresses each file
+step3: reads each decompressed line
+step4: splits decompressed line in uuid and json
+step5: opens result.txt
+step6: loads the mapper function and feeds lines to is of form uuid filename json
+step7: writes the output of the mapper to result.txt
+NOTE: the paths commented are the ones on the local machine/repo and the ones uncommented are the ones in docker image
+'''
 import os
 import sys
 import simplejson as json

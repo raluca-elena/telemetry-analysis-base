@@ -1,11 +1,11 @@
 #!/usr/bin/python
 '''
-python-helper-reducer functionality:
-step1: takes file names as arguments
+python-helper-reducer.py functionality:
+step1: takes reducer module as argv[1] and file names at stdin
 step2: opens files and removes empty lines
 step3: concatenates all lines in a list called lines
 step5: splits each line and constructs dictionary of form to {key1 : [val1 val2 val3], key2: [val1, val2, val3]}
-step6: load reducer.reduce and feel it input of form key [val1 val2 val3]
+step6: loades reducer.reduce and feel it input of form: key [val1 val2 val3]
 step7: write result to result.txt
 NOTE: the paths commented are the ones on the local machine/repo and the ones uncommented are the ones in docker image
 '''
@@ -42,6 +42,7 @@ def groupByKey(lines):
         else:
             d[key]=[val]
     return d 
+
 d = groupByKey(lines)
 for k, v in d.iteritems():
      result.write(reducer.reduce(k, v) + "\n")
