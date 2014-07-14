@@ -1,9 +1,7 @@
 #!/usr/bin/python
 import os
 import sys
-import fileinput
 import simplejson as json
-import subprocess
 import logging
 from subprocess import Popen, PIPE
 logging.basicConfig(filename='python-helper-function.log',level=logging.DEBUG)
