@@ -1,3 +1,11 @@
+/**
+ * mapperDriver functionality:
+ * step1: load analysis-tools.yml
+ * step2: read configuration in analysis-tools.yml
+ * step3: spawn mapper
+ * NOTE: the paths commented are the ones on the local machine/repo and the ones uncommented are the ones in docker
+ *       image
+ */
 exports.mapper = function() {
     var yaml = require('js-yaml');
     var fs = require('fs');
