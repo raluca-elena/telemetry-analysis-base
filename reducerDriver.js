@@ -18,17 +18,18 @@ exports.reduce = function() {
     } else if (doc.language == 'python') {
         //proc = child_process.spawn('./python-helper-reducer.py', ['reducer'], { stdio: ['pipe', process.stdout, process.stderr]});
         proc = child_process.spawn('/opt/analysis-tools/helper-functions/python-helper-reducer.py', ['reducer'], { stdio: ['pipe', process.stdout, process.stderr]});
-
     } else {
         console.log("language not supported", doc.language);
         process.exit();
     }
+
     //return reducer exit code
     proc.on('exit', function (code) {
         console.log("REDUCER exit code ", code);
         email.sendMail();
 
     });
+    
     //if reducer returned an error print it to console
     proc.on('error', function(err) {
         console.error("reducer experienced this error ", err);
