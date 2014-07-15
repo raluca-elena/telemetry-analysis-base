@@ -100,7 +100,7 @@ and build it there.
 
  * Takes as environment variable the list of dependent tasks
  * Constructs the urls for downloading the result for each dependent task
- * Starts downloading the results of the mapper in /mapperOutput
+ * Starts downloading the results of the mapper in ./mapperOutput
  * Reads the specification the job's specification from analysis-tools.yml.
  * From the specification it will infer:
      1. what kind of reducer module needs to load (javascript/python or a binary)
