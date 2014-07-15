@@ -64,7 +64,7 @@ This is done by running:
 
  `$docker build [options] PATH|URL`
 
-For example if you want to build a Dockerimage in the current directory you run: 
+For example if you want to build a Docker image in the current directory you run: 
   
   `$docker .`
 
