@@ -13,7 +13,6 @@ A task in TaskCluster needs:
 ### Docker Images and  Docker Containers
 
 First thing that you need to do it to install Docker on your machine.
-
 You can start from here:
 
 https://docs.docker.com/installation/
@@ -23,15 +22,11 @@ https://docs.docker.com/installation/
 
 The Docker Engine uses Linux-specific kernel features, so to run it on OS X you need to use a lightweight virtual machine (vm).
 
-Docker provides a solution called `Boot2Docker`:
+Docker provides a solution called `Boot2Docker`: https://docs.docker.com/installation/mac/
 
-https://docs.docker.com/installation/mac/
+Another option is using `Vagrant`: http://www.vagrantup.com/
 
-Another option is using `Vagrant`: 
-
-http://www.vagrantup.com/
-
-This project has support for using Vagrant. If you want to use Docker with vagrant you need to:
+This project provides support for Vagrant. If you want to use Docker with vagrant you need to:
 
    1. download vagrant from here http://www.vagrantup.com/downloads.html
    2. go into your working directory
