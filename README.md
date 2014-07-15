@@ -87,7 +87,7 @@ and build it there.
 ### Map job
 
  * A map job take as input a list of files to download. 
- * Starts k parallel downloads and runns until all files are downloaded in ./s3/`path_in_S3`/filename
+ * Starts k parallel downloads and runs until all files are downloaded in ./s3/`path_in_S3`/filename
  * Reads the specification the job's specification from analysis-tools.yml.
  * From the specification it will infer:
      1. if the files need to be decompressed or not
