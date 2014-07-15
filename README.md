@@ -1,7 +1,7 @@
 telemetry-analysis-base
 =======================
 
-A task in taskCluster needs:
+A task in TaskCluster needs:
   
    * a setup AKA an environment provided as a Docker image that will be the base of the docker container 
    * a task definition (custom code) that will run in the Docker instance
@@ -44,7 +44,7 @@ and some additional information like its unique id, networking configuration, an
 Containers can change, and so they have state. A container may be running or exited.
 
 
-#Building and pushing a Dockerimage
+##Building and pushing a Docker image
 
 
 In this repo you can find a Dockerfile.
@@ -72,7 +72,7 @@ and build it there.
 
 #Stucture of a map/reduce job
 
-# Map job
+## Map job
 
  * A map job take as input a list of files to download. 
  * Starts by downloading k files in paralel in ./s3/<path in s3>/filename
@@ -84,7 +84,7 @@ and build it there.
  * Spawns a child process that will run the map job as files are ready for processing(downloaded and decompressed) 
 
 
-# Reduce Job
+## Reduce Job
 
  * Takes as environment variable the list of dependent tasks
  * Constructs the urls for downloading the result for each dependent task
