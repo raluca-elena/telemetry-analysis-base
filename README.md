@@ -61,8 +61,10 @@ If you want to share this image you might want to push it into a registry.
 You can do that by pushing the image running the following command:
 `$docker push NAME`
 
+
 Taskcluster has his own registry so if you want to use your image for a task you should push it there.
 There is a Makefile in this repository that builds an image and pushes it to taskcluster registry.
+
 
 If you are a MAC OS X and use Vagrant you need to add the Dockerfile from this repo in Vagrant and also the makefile
 and build it there.
@@ -72,25 +74,25 @@ and build it there.
 
 # Map job
 
-A map job take as input a list of files to download. 
-Starts by downloading k files in paralel in ./s3/<path in s3>/filename
-Reads the specification the job's specification from analysis-tools.yml.
-From the specification it will infer:
- if the files need to be decompressed or not
- what kind of mapper module needs to load (javascript/python or a binary)
- what is the name of the mapper module that needs to be loaded(custom mapper)
-Spawns a child process that will run the map job as files are ready for processing(downloaded and decompressed) 
+ * A map job take as input a list of files to download. 
+ * Starts by downloading k files in paralel in ./s3/<path in s3>/filename
+ * Reads the specification the job's specification from analysis-tools.yml.
+ * From the specification it will infer:
+     1. if the files need to be decompressed or not
+     2. what kind of mapper module needs to load (javascript/python or a binary)
+     3. what is the name of the mapper module that needs to be loaded (custom mapper)
+ * Spawns a child process that will run the map job as files are ready for processing(downloaded and decompressed) 
 
 
-# Reducer Job
+# Reduce Job
 
  * Takes as environment variable the list of dependent tasks
  * Constructs the urls for downloading the result for each dependent task
  * Starts downloading the results of the mapper in /mapperOutput
  * Reads the specification the job's specification from analysis-tools.yml.
  * From the specification it will infer:
-    1. what kind of reducer module needs to load (javascript/python or a binary)
-    2. what is the name of the reducer module that needs to be loaded(custom reducer)
+     1. what kind of reducer module needs to load (javascript/python or a binary)
+     2. what is the name of the reducer module that needs to be loaded(custom reducer)
  * Spawns a child process that will run the reduce job as the files are ready for processing(downloaded)
 
 Note:
