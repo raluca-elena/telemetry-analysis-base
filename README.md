@@ -24,9 +24,9 @@ The Docker Engine uses Linux-specific kernel features, so to run it on OS X you 
 
 Docker provides a solution called `Boot2Docker`: https://docs.docker.com/installation/mac/
 
-Another option is using `Vagrant`: http://www.vagrantup.com/
+Another option is to use `Vagrant`: http://www.vagrantup.com/
 
-This project provides support for Vagrant. If you want to use Docker with vagrant you need to:
+This repo provides support for Vagrant. If you want to use Docker with vagrant you need to:
 
    1. download vagrant from here http://www.vagrantup.com/downloads.html
    2. go into your working directory
@@ -51,7 +51,7 @@ Then the Union File System adds a read-write layer on top. That read-write layer
 Containers can change, and so they have state. A container may be running or exited.
 
 
-###Building and pushing a Docker image
+###Building and pushing a Docker Image
 
 
 In this repo you can find a Dockerfile.
@@ -68,17 +68,17 @@ For example if you want to build a Dockerimage in the current directory you run:
   
   `$docker .`
 
-If you want to share this image you might want to push it into a registry.
+If you want to share this image you might want to push it to a registry.
 You can do that by pushing the image running the following command:
  
  `$docker push NAME`
 
 
 Taskcluster has his own registry so if you want to use your image for a task you should push it there.
-There is a Makefile in this repository that builds an image and pushes it to taskcluster registry.
+There is a `Makefile` in this repository that builds an image and pushes it to taskcluster registry.
 
 
-If you are a MAC OS X and use Vagrant you need to add the Dockerfile from this repo in Vagrant and also the makefile
+If you are a MAC OS X and use Vagrant you need to add the `Dockerfile` from this repo in `Vagrant` and also the makefile
 and build it there.
 
 
