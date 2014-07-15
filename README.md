@@ -3,7 +3,7 @@
 
 A task in TaskCluster needs:
   
-   * a setup AKA an environment provided as a Docker image that will be the base of the docker container 
+   * a setup AKA an environment provided as a Docker image that will be the base of the Docker container 
    * a task definition (custom code) that will run in the Docker instance
 
 
