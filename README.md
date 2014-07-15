@@ -42,7 +42,7 @@ You can access your local directory from  `/vagrant/file`
 In Docker terminology, a read-only Layer is called an image. An image _never_ changes.
 Docker images are comprised of a series of layers. An image can be basic, with nothing but the operating-system fundamentals, or it can consist of a sophisticated pre-built application stack ready for launch.
 
-A Docker image is the basis of a Docker container.
+A Docker `image` is the basis of a Docker `container`.
 
 Once you start a process in Docker from an Image, Docker fetches the image and its Parent Image, 
 and repeats the process until it reaches the Base Image. 
