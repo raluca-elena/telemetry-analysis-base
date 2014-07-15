@@ -30,7 +30,7 @@ This repo provides support for Vagrant. If you want to use Docker with vagrant y
 
    1. download vagrant from here http://www.vagrantup.com/downloads.html
    2. go into your working directory
-   3. add Vagrantfile from this repo
+   3. add `Vagrantfile` from this repo
    4. run: 
        * ` $vagrant up`
        * ` $vagrant ssh`
@@ -54,7 +54,7 @@ Containers can change, and so they have state. A container may be running or exi
 ###Building and pushing a Docker Image
 
 
-In this repo you can find a Dockerfile.
+In this repo you can find a `Dockerfile`.
 
 This is a customization for a Docker image (when run will create an custom image with all the dependencies needed for a map/reduce job).
 
