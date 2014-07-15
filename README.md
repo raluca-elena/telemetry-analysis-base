@@ -22,14 +22,14 @@ The Docker Engine uses Linux-specific kernel features, so to run it on OS X we n
 
 Docker provides a solution called `Boot2Docker`. Another option is using `Vagrant`: http://www.vagrantup.com/.
 This project has support for using Vagrant. If you want to use Docker with vagrant you need to:
--------------------------------
+
    1. download vagrant from here http://www.vagrantup.com/downloads.html
    2. go into your working directory
    3. add Vagrantfile from this repo
       ` $vagrant up`
       ` $vagrant ssh`
 You can access your local directory from  `/vagrant/file`
-------------------------------- 
+
 
 In Docker terminology, a read-only Layer is called an image. An image _never_ changes.
 Docker images are comprised of a series of layers. An image can be basic, with nothing but the operating-system fundamentals, 
@@ -45,6 +45,7 @@ Containers can change, and so they have state. A container may be running or exi
 
 
 #Building and pushing a Dockerimage
+
 
 In this repo you can find a Dockerfile.
 This is a customization for a Docker image.(when run will create an custom image with all the dependencies needed for a map/reduce job)
@@ -82,7 +83,7 @@ Spawns a child process that will run the map job as files are ready for processi
 
 
 # Reducer Job
--------
+
  * Takes as environment variable the list of dependent tasks
  * Constructs the urls for downloading the result for each dependent task
  * Starts downloading the results of the mapper in /mapperOutput
