@@ -33,7 +33,7 @@ RUN cd /opt/analysis-tools; npm install
 
 RUN mkdir /opt/analysis-tools/helper-functions
 ADD ./helper-functions  /opt/analysis-tools/helper-functions 
-RUN sudo chmod -R 777 /opt/analysis-tools
+RUN sudo chmod -R a+xr /opt/analysis-tools
 # Set variable normally configured at login, by the shells parent process, these
 # are taken from GNU su manual
 ENV HOME /home/worker
