@@ -6,9 +6,7 @@
  * step3: write credentials to tempConfig.json
  */
 var fs = require('fs');
-//var decryption = require('./encrypt.js');
-var decryption = require('/opt/analysis-tools/encrypt.js');
-
+var decryption = require('./encrypt');
 exports.makeConfig = function(){
     var encodedCredentials = process.env.CREDENTIALS;
     var buff = new Buffer(encodedCredentials, 'base64')

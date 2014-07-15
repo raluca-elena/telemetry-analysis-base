@@ -2,7 +2,7 @@
  * email.js functionality:
  *
  * step1: reads REDUCER_ID as env variable so it can construct the result link
- * step2: reads OWNER as env variable, this shoulw be an email address where the result link should be sent to
+ * step2: reads OWNER as env variable, this should be an email address where the result link should be sent to
  * step3: constructs message
  * step4: sends message and prints "graph just finished execution :)" if managed to send the email
  */

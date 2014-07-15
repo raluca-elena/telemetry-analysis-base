@@ -17,18 +17,18 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 
 //decrypt one time credentials
-var credentialsGenerator = require('/opt/analysis-tools/fabricateS3Credentials.js');
+//var credentialsGenerator = require('/opt/analysis-tools/fabricateS3Credentials.js');
+var credentialsGenerator = require('./fabricateS3Credentials');
+
 credentialsGenerator.makeConfig();
 
-//var mapper = require('./mapperDriver.js');
-//aws.config.loadFromPath('tempConfig.json');
+//aws.config.loadFromPath('./tempConfig.json');
 
 //load credentials
 aws.config.loadFromPath('/opt/analysis-tools/tempConfig.json');
 
 //import mapperDriver that parses analysist-tools.yml and starts mapper proc
-var mapper = require('/opt/analysis-tools/mapperDriver.js');
-
+var mapper = require('./mapperDriver');
 var s3 = new aws.S3();
 
 //remove node and script arguments
@@ -48,7 +48,8 @@ var proc = mapper.mapper();
 (function() {
     while (downloadingFiles.length !== 0) {
         downloadFile(downloadingFiles.pop());
-    }})();
+    }
+})();
 
 //file downloaded correctly
 var filesDownloaded = [];
@@ -89,7 +90,6 @@ function downloadFile(pathInS3) {
                 console.log("files downloaded successfully\n", filesDownloaded);
                 console.log("files that could not be downloaded\n", filesNotDownloaded);
                 proc.stdin.end();
-                process.exit();
             } else {
                 filesNotDownloaded.push(pathInS3);
                 return;

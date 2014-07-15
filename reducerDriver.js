@@ -9,8 +9,8 @@
  *       image
  */
 //load email module
-//var email=require('./email.js');
-var email=require('/opt/analysis-tools/email.js');
+var email=require('./email');
+
 
 //parse analysis-tools.yml and spawn reducer
 exports.reduce = function() {
