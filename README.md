@@ -13,10 +13,13 @@ A task in TaskCluster needs:
 ### Docker Images and  Docker Containers
 
 First thing that you need to do it to install Docker on your machine.
-You can start from here: https://docs.docker.com/installation/
+
+You can start from here:
+
+https://docs.docker.com/installation/
 
 
-If you are running a MAC OS X
+#### Running Docker on  MAC OS X
 
 The Docker Engine uses Linux-specific kernel features, so to run it on OS X you need to use a lightweight virtual machine (vm).
 
