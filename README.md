@@ -105,7 +105,7 @@ and build it there.
  * Reads the specification the job's specification from analysis-tools.yml.
  * From the specification it will infer:
      1. what kind of reducer module needs to load (javascript/python or a binary)
-     2. what is the name of the reducer module that needs to be loaded(custom reducer)
+     2. what is the name of the reducer module that needs to be loaded (custom reducer)
  * Spawns a child process that will run the reduce job as the files are ready for processing(downloaded)
  * Writes the output to result.txt
  * Sends email to owner that the job was finished
