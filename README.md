@@ -84,7 +84,7 @@ and build it there.
 
 ##Stucture of a map/reduce job
 
-### Map job
+### Map Job
 
  * A map job take as input a list of files to download. 
  * Starts k parallel downloads and runs until all files are downloaded in ./s3/`path_in_S3`/filename
