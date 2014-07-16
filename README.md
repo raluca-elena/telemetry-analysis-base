@@ -94,7 +94,7 @@ and build it there.
      2. what kind of mapper module needs to load (javascript/python or a binary)
      3. what is the name of the mapper module that needs to be loaded (custom mapper)
  * Spawns a child process that will run the map job as files are ready for processing(downloaded and decompressed)
- * Writes the output to result.txt
+ * Writes the output to `result.txt`
 
 
 ### Reduce Job
@@ -107,7 +107,7 @@ and build it there.
      1. what kind of reducer module needs to load (javascript/python or a binary)
      2. what is the name of the reducer module that needs to be loaded (custom reducer)
  * Spawns a child process that will run the reduce job as the files are ready for processing(downloaded)
- * Writes the output to result.txt
+ * Writes the output to `result.txt`
  * Sends email to owner that the job was finished
 
 Note:
